@@ -2,6 +2,8 @@ import paramiko
 import logging
 from logging import Logger
 
+# Run multiple commands on one host
+
 def run_ssh_command(
     commands : list,
     hostname : str,
