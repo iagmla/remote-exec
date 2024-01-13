@@ -1,10 +1,11 @@
 import paramiko
 import logging
 from logging import Logger
+from threading import Thread
 
 # Run multiple commands on one host
 
-def run_ssh_command(
+def run_ssh_commands(
     commands : list,
     hostname : str,
     port : str,
@@ -23,8 +24,8 @@ def run_ssh_command(
         key_filename=key
     )
     for command in commands:
-        hostname_line = hostname + ":" + command
-        print(hostname_line
+        hostname_line = hostname + " : " + command
+        print(hostname_line)
         logger.info(hostname_line)
         stdin, stdout, stderr = s.exec_command(command)
         for line in stdout.readlines():
@@ -33,6 +34,33 @@ def run_ssh_command(
             logger.info(log_line)
     s.close()
 
+# Run multiple commands on multiple hosts via threads
+
+def run_ssh_commands_on_hosts(
+    commands : list,
+    hosts : list,
+    port : str,
+    username : str,
+    password : str,
+    key : str,
+    logger : Logger
+) -> None:
+    for host in hosts:
+        t = Thread(
+            target=run_ssh_commands,
+            args=(
+                commands,
+                host,
+                port,
+                username,
+                password,
+                key,
+                logger,
+            )
+        )
+        t.start()
+        t.join()
+ 
 commands = ["ls -l", "uptime"]
 hostname = "localhost"
 port = 22
@@ -53,9 +81,21 @@ logging.basicConfig(
 logger.setLevel(logging.INFO)
 
 
-run_ssh_command(
+run_ssh_commands(
     commands=commands,
     hostname=hostname,
+    port=port,
+    username=username,
+    password=password,
+    key=key,
+    logger=logger
+)
+
+hosts = ["localhost", "asmodeus"]
+
+run_ssh_commands_on_hosts(
+    commands=commands,
+    hosts=hosts,
     port=port,
     username=username,
     password=password,
