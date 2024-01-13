@@ -23,8 +23,9 @@ def run_ssh_command(
         key_filename=key
     )
     for command in commands:
-        print(hostname)
-        logger.info(hostname + ":" + command)
+        hostname_line = hostname + ":" + command
+        print(hostname_line
+        logger.info(hostname_line)
         stdin, stdout, stderr = s.exec_command(command)
         for line in stdout.readlines():
             print(line, end="")
