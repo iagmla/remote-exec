@@ -59,7 +59,6 @@ def run_ssh_commands_on_hosts(
             )
         )
         t.start()
-        t.join()
  
 commands = ["ls -l", "uptime"]
 hostname = "localhost"
