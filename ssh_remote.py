@@ -23,10 +23,13 @@ def run_ssh_command(
         key_filename=key
     )
     for command in commands:
+        print(hostname)
+        logger.info(hostname + ":" + command)
         stdin, stdout, stderr = s.exec_command(command)
         for line in stdout.readlines():
             print(line, end="")
-            logger.info(line)
+            log_line = line
+            logger.info(log_line)
     s.close()
 
 commands = ["ls -l", "uptime"]
